@@ -1,0 +1,12 @@
+type: edu
+files:
+- name: tests.py
+  visible: false
+- name: test/tests.py
+  visible: false
+- name: test/__init__.py
+  visible: false
+- name: regression.py
+  visible: true
+- name: data_stage3.csv
+  visible: true
