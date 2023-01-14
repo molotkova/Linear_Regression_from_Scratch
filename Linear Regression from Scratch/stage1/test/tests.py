@@ -1,6 +1,7 @@
-from hstest.stage_test import List
-from hstest import StageTest, CheckResult, TestCase
 import re
+
+from hstest import StageTest, CheckResult, dynamic_test, TestedProgram
+
 
 def get_number(string):
     return list(map(float, re.findall(r'-*\d*\.\d+|-*\d+', string)))
@@ -8,14 +9,20 @@ def get_number(string):
 
 class LinearRegression(StageTest):
 
-    def generate(self) -> List[TestCase]:
-        return [
-            TestCase(stdin="", attach=("", ""), time_limit=900000)
-        ]
+    @dynamic_test()
+    def test_1(self):
+        try:
+            import pandas
+            import numpy
+            import sklearn
+        except ModuleNotFoundError as err:
+            return CheckResult.wrong(str(err))
+        return CheckResult.correct()
 
-    def check(self, reply: str, attach):
-
-        reply = reply.strip().split("\n")
+    @dynamic_test()
+    def test_2(self):
+        t = TestedProgram()
+        reply = t.start().strip().split("\n")
 
         if len(reply) == 0:
             return CheckResult.wrong("No output was printed. Print output in the right format.")

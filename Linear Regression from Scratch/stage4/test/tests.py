@@ -1,6 +1,6 @@
-from hstest.stage_test import List
-from hstest import StageTest, CheckResult, TestCase
 import re
+
+from hstest import StageTest, CheckResult, TestedProgram, dynamic_test
 
 
 def get_number(string):
@@ -9,12 +9,10 @@ def get_number(string):
 
 class LinearRegression(StageTest):
 
-    def generate(self) -> List[TestCase]:
-        return [
-            TestCase(stdin="", attach=("", ""), time_limit=900000)
-        ]
-
-    def check(self, reply: str, attach):
+    @dynamic_test()
+    def test_1(self):
+        t = TestedProgram()
+        reply = t.start()
 
         if len(reply) == 0:
             return CheckResult.wrong("No output was printed. Print output in the right format.")
@@ -41,8 +39,9 @@ class LinearRegression(StageTest):
         name3, answer3 = output3.strip().split(':')
         name4, answer4 = output4.strip().split(':')
 
-        answers = {name1.strip(): answer1, name2.strip(): answer2,
-                   name3.strip(): answer3, name4.strip(): answer4}
+        answers = {
+            name1.strip(): answer1, name2.strip(): answer2,
+            name3.strip(): answer3, name4.strip(): answer4}
 
         intercept = answers.get('intercept', '0000000')
         coefficient = answers.get('coefficient', '0000000')
@@ -61,17 +60,21 @@ class LinearRegression(StageTest):
             return CheckResult.wrong(f"Intercept should contain a single value, found {len(intercept)}")
         intercept = intercept[0]
         if not abs(intercept) < 10 ** (-10):
-            return CheckResult.wrong("Wrong value for difference between Intercepts of sklearn LinearRegression and CustomLinearRegression")
+            return CheckResult.wrong(
+                "Wrong value for difference between Intercepts of sklearn LinearRegression and CustomLinearRegression")
 
         coefficient = get_number(coefficient)
         if len(coefficient) != 3:
             return CheckResult.wrong(f"Coefficient should contain three values, found {len(coefficient)}")
         if not abs(coefficient[0]) < 10 ** (-10):
-            return CheckResult.wrong("Wrong value for difference between beta1 of sklearn LinearRegression and beta1 of CustomLinearRegression")
+            return CheckResult.wrong(
+                "Wrong value for difference between beta1 of sklearn LinearRegression and beta1 of CustomLinearRegression")
         if not abs(coefficient[1]) < 10 ** (-10):
-            return CheckResult.wrong("Wrong value for difference between beta2 of sklearn LinearRegression and beta2 of CustomLinearRegression")
+            return CheckResult.wrong(
+                "Wrong value for difference between beta2 of sklearn LinearRegression and beta2 of CustomLinearRegression")
         if not abs(coefficient[2]) < 10 ** (-10):
-            return CheckResult.wrong("Wrong value for difference between beta3 of sklearn LinearRegression and beta3 of CustomLinearRegression")
+            return CheckResult.wrong(
+                "Wrong value for difference between beta3 of sklearn LinearRegression and beta3 of CustomLinearRegression")
 
         r2 = get_number(r2)
         if len(r2) != 1:
